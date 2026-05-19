@@ -42,4 +42,19 @@ public class Person {
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "tutor")
   private List<Course> tutoringCourses;
 
+
+  @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Contact> contacts;
+
+  public void addContact(Contact contact) {
+    contacts.add(contact);
+    contact.setStudent(this);
+  }
+
+  public void removeContact(Contact contact) {
+    contacts.remove(contact);
+    contact.setStudent(null);
+  }
+
+
 }
