@@ -43,14 +43,14 @@ class PersonController {
     }
 
 
-    @PostMapping("/{Id}")
+    @PostMapping("/{Id}/{contact}")
     @Operation(summary = "Add contact to a student")
     public PersonDTO addContact(@PathVariable Long Id, @RequestBody ContactDTO contactDTO) {
         return personService.addContact(Id, contactDTO);
     }
 
 
-    @DeleteMapping("/{personId}")
+    @DeleteMapping("/{personId}/contact/{contactId}")
     @Operation(summary = "Remove contact from a student")
     public PersonDTO removeContact(@PathVariable Long personId, @PathVariable Long contactId) {
         return personService.removeContact(personId, contactId);
