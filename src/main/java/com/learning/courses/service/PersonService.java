@@ -1,9 +1,11 @@
 package com.learning.courses.service;
 
+import com.learning.courses.dto.ContactDTO;
 import com.learning.courses.dto.CreatePersonDTO;
 import com.learning.courses.dto.PersonDTO;
 import com.learning.courses.exception.EntityNotFoundException;
 import com.learning.courses.mapper.PersonMapper;
+import com.learning.courses.model.Contact;
 import com.learning.courses.model.Person;
 import com.learning.courses.repository.PersonRepository;
 import jakarta.validation.constraints.NotNull;
@@ -49,5 +51,31 @@ public class PersonService {
     person = personRepository.save(person);
     return personMapper.toDTO(person);
   }
+
+    @Transactional
+    public PersonDTO addContact(Long id, ContactDTO contactDTO) {
+        var person = personRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(id, Person.class.getSimpleName()));
+        var contact = Contact.builder()
+                .email(contactDTO.getEmail())
+                .phoneNumber(contactDTO.getPhone())
+                .address(contactDTO.getAddress())
+                .student(person)
+                .build();
+        person.getContacts().add(contact);
+        person = personRepository.save(person);
+        return personMapper.toDTO(person);
+    }
+
+    @Transactional
+    public PersonDTO removeContact(Long personId, Long contactId) {
+        var person = personRepository.findById(personId).orElseThrow(() -> new EntityNotFoundException(personId, Person.class.getSimpleName()));
+        var contact = person.getContacts().stream()
+                .filter(c -> c.getId().equals(contactId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(contactId, Contact.class.getSimpleName()));
+        person.getContacts().remove(contact);
+        person = personRepository.save(person);
+        return personMapper.toDTO(person);
+    }
 
 }
